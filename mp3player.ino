@@ -4,7 +4,7 @@
 
 
 #define PIN_READY D3 //GPIO 0
-#define PIN_PULSE D4 //GPIO 2
+#define PIN_PULSE RX //GPIO 2
 RotaryDialer dialer = RotaryDialer(PIN_READY, PIN_PULSE);
 
 #define PIN_BUSY D5
@@ -20,7 +20,7 @@ void setup () {
 
   pinMode(PIN_BUSY, INPUT);
   pinMode(PIN_READY, INPUT);
-  pinMode(PIN_PULSE, INPUT_PULLUP);
+  pinMode(PIN_PULSE, INPUT);
 
   Serial.println("Setting up mp3 player");
   mp3Serial.begin(9600);
@@ -36,13 +36,13 @@ void setup () {
 
 void loop () {
 
-    Serial.println(digitalRead(PIN_BUSY));
     if (number == "") {
+      //if(millis()%100==0){Serial.println("stage1 "+number);}
       if (millis() > started + 15000) {
         Serial.println("nothing received,sleeping");
         ESP.deepSleep(0);
       }
-      Serial.println("waiting for number");
+      //Serial.println("waiting for number");
       if (dialer.update()) {
         Serial.println("something happens");
         number = String(dialer.getNextNumber());
@@ -50,11 +50,13 @@ void loop () {
       }
     }
     else {
+      //if(millis()%100==0){Serial.println("stage2 "+number);}
       if (playat > millis()) {
-        Serial.println("still waiting");
+        //Serial.println("still waiting");
         if (dialer.update()) {
           Serial.println("something happens");
-          number += (char) dialer.getNextNumber();
+          number = number + String(dialer.getNextNumber());
+          Serial.println(number);
           playat = millis() + 5000;
         }
       }
@@ -68,6 +70,6 @@ void loop () {
   }
 
   }
-  delay(100);
+  
 
 }

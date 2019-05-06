@@ -1,4 +1,6 @@
 # MP3-player for rotary phone
+## dependencies
+https://github.com/DFRobot/DFPlayer-Mini-mp3
 ## PINS
 ### ESP - MP3
 5V - VCC
